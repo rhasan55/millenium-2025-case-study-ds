@@ -10,8 +10,15 @@ DATA_DIR = BASE_DIR / "data"
 PROCESSED_DIR = DATA_DIR / "processed"
 LOGO_PATH = BASE_DIR / "image.png"
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4-turbo-preview")
+# Try Streamlit secrets first, then fall back to environment variables
+try:
+    import streamlit as st
+    OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
+    OPENAI_MODEL = st.secrets.get("OPENAI_MODEL", os.getenv("OPENAI_MODEL", "gpt-4-turbo-preview"))
+except (ImportError, FileNotFoundError, AttributeError):
+    # Fallback for local development without Streamlit secrets
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+    OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4-turbo-preview")
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 VECTOR_DIMENSION = 384
 
